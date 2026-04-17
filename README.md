@@ -101,8 +101,8 @@ C944NTVCH.json: invalid JSON at line 1, column 1: Expecting value
 A simple shell script to extract channel names without extensive json parsing.
 The output is:
 
-- [channel_names.txt](./Scripts/channel_names.txt)
-- [channel_names-sorted.txt](./Scripts/channel_names-sorted.txt)
+- [channel_names.txt](channel_names.txt)
+- [channel_names-sorted.txt](channel_names-sorted.txt)
 
 ## Script: Sort and Expand Attachments
 
@@ -142,13 +142,20 @@ active, at least the channels with the most content.)
 - 7.6G : report-vod-issues
 - 6.7G : dprd-vision-releases
 
-## Script: HTML Generation
+## Script: Channel HTML Generation
 
 For a specific folder, you can point `htmlgen.py` at it. This will convert the
 `index.json` file into a sequence of `index*.html` files (for pagination).
 
 For the entirety of the output, run `htmlgenall.py` to generate HTML indexes
 for all of the folders.
+
+## Script: HTML Generation of Index for All Channels
+
+Run the `createindex.py` file to generate a top-level index of all channels.
+This is output as a json file with channel name, disk space used, message
+count, and attachment count. You'll want to copy the `index.html` file, which
+loads this data file and gives you sortable columns.
 
 ## Script: File Types
 
