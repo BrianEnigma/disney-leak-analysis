@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Channel Index</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #222;
+    }
+    h1 {
+      margin-bottom: 1.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 2px solid #333;
+      background: #f5f5f5;
+    }
+    tbody tr:nth-child(even) {
+      background: #fafafa;
+    }
+    tbody td {
+      padding: 0.4rem 0.75rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    td:nth-child(2),
+    td:nth-child(3),
+    td:nth-child(4) {
+      text-align: right;
+    }
+    th:nth-child(2),
+    th:nth-child(3),
+    th:nth-child(4) {
+      text-align: right;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    #error {
+      color: red;
+    }
+    thead th {
+      cursor: pointer;
+      user-select: none;
+    }
+    thead th:hover {
+      background: #e8e8e8;
+    }
+    thead th.sort-asc::after  { content: ' ▲'; font-size: 0.75em; }
+    thead th.sort-desc::after { content: ' ▼'; font-size: 0.75em; }
+  </style>
+</head>
+<body>
+  <h1>Channel Index</h1>
+  <p id="error"></p>
+  <table id="channel-table">
+    <thead>
+      <tr>
+        <th data-col="folder">Folder</th>
+        <th data-col="size">Size</th>
+        <th data-col="message_count">Message Count</th>
+        <th data-col="attachment_count">Attachment Count</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <script>
+    // Convert a human-readable size string like "31G" or "9.3G" or "512M" to bytes.
+    function parseSize(str) {
+      const suffixes = { T: 1e12, G: 1e9, M: 1e6, K: 1e3 };
+      const m = String(str).match(/^([\d.]+)\s*([TGMK])?$/i);
+      if (!m) return 0;
+      const num = parseFloat(m[1]);
+      const mult = m[2] ? (suffixes[m[2].toUpperCase()] || 1) : 1;
+      return num * mult;
+    }
+
+    let tableData = [];
+    let sortCol = 'size';  // 'folder' | 'size' | 'message_count' | 'attachment_count'
+    let sortDir = -1;     // 1 = ascending, -1 = descending
+
+    const columns = [
+      { key: 'folder',           label: 'Folder' },
+      { key: 'size',             label: 'Size' },
+      { key: 'message_count',    label: 'Message Count' },
+      { key: 'attachment_count', label: 'Attachment Count' },
+    ];
+
+    function sortValue(row, key) {
+      if (key === 'size') return parseSize(row[key]);
+      return row[key];
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      const sorted = [...tableData].sort((a, b) => {
+        if (sortCol === null) return 0;
+        const av = sortValue(a, sortCol);
+        const bv = sortValue(b, sortCol);
+        if (av < bv) return -sortDir;
+        if (av > bv) return  sortDir;
+        return 0;
+      });
+
+      sorted.forEach(row => {
+        const tr = document.createElement('tr');
+
+        const tdFolder = document.createElement('td');
+        const a = document.createElement('a');
+        a.href = `${row.folder}/index.html`;
+        a.textContent = row.folder;
+        tdFolder.appendChild(a);
+
+        const tdSize = document.createElement('td');
+        tdSize.textContent = row.size;
+
+        const tdMessages = document.createElement('td');
+        tdMessages.textContent = row.message_count.toLocaleString();
+
+        const tdAttachments = document.createElement('td');
+        tdAttachments.textContent = row.attachment_count.toLocaleString();
+
+        tr.appendChild(tdFolder);
+        tr.appendChild(tdSize);
+        tr.appendChild(tdMessages);
+        tr.appendChild(tdAttachments);
+        tbody.appendChild(tr);
+      });
+
+      // Update header indicators
+      document.querySelectorAll('thead th').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+        if (th.dataset.col === sortCol) {
+          th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+        }
+      });
+    }
+
+    // Wire up header clicks
+    document.querySelectorAll('thead th').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (sortCol === col) {
+          sortDir *= -1;
+        } else {
+          sortCol = col;
+          sortDir = 1;
+        }
+        renderTable();
+      });
+    });
+
+    fetch('index.json')
+      .then(res => {
+        if (!res.ok) throw new Error(`Failed to load index.json: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        tableData = data;
+        renderTable();
+      })
+      .catch(err => {
+        document.getElementById('error').textContent = err.message;
+      });
+  </script>
+</body>
+</html>
