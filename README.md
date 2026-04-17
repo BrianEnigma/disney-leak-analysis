@@ -116,6 +116,8 @@ After expansion, we can run the `du` tool, sorted, to find the most active
 channels out of the 9,944 in the archive. (Or if not technically the most 
 active, at least the channels with the most content.)
 
+The top channel are:
+
 - 32G : release-proof
 - 31G : daily-editorial
 - 26G : disneyplus-support-general
@@ -141,6 +143,7 @@ active, at least the channels with the most content.)
 - 7.9G : ds-it-support-plus
 - 7.6G : report-vod-issues
 - 6.7G : dprd-vision-releases
+- ...
 
 ## Script: Channel HTML Generation
 
