@@ -43,6 +43,8 @@ using these scripts.
   file written to your output folder.
 - Copy `index.html` to your output folder. This has the JavaScript code to read
   and sort the individual Slack channels.
+- In the output folder, run `python3 -m http.server 8888` — this is required because the HTML needs to load the JSON and can't do that directly from disk. It needs an actual web server.
+- Open your browser to <http://localhost:8888>
 
 ## Script: Find Anomalies
 
