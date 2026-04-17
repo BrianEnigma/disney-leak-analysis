@@ -150,6 +150,8 @@ For a specific folder, you can point `htmlgen.py` at it. This will convert the
 For the entirety of the output, run `htmlgenall.py` to generate HTML indexes
 for all of the folders.
 
+![Single Channel](one-channel.png)
+
 ## Script: HTML Generation of Index for All Channels
 
 Run the `createindex.py` file to generate a top-level index of all channels.
@@ -157,9 +159,35 @@ This is output as a json file with channel name, disk space used, message
 count, and attachment count. You'll want to copy the `index.html` file, which
 loads this data file and gives you sortable columns.
 
+![Top-Level Index](main_index.png)
+
 ## Script: File Types
 
 Run `filetypes.py` to generate two files:
 
-- filetypes.txt : A list of file extensions and counts, sorted by count.
+- [filetypes.txt](filetypes.txt) : A list of file extensions and counts, sorted by count.
 - filetypes-none.txt : A list of all files without extensions.
+
+```
+1162086  (no ext)
+606852  .png
+129426  .jpg
+ 20497  .txt
+ 17545  .xlsx
+ 13401  .pdf
+  7980  .mp4
+  6400  .docx
+  6276  .jpeg
+  6215  .mov
+  4880  .csv
+  4016  .gif
+  2400  .zip
+  2387  .chls
+  1805  .xml
+  1706  .mobileprovision
+  1500  .heic
+  1428  .pptx
+  1409  .json
+   895  .sql
+...
+```
